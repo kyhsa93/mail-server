@@ -1,10 +1,12 @@
 var nodeMailer = require('nodemailer');
 
 module.exports = (request, response) => {
-    console.log('request: ', request.body);
 
+    /**
+     * If you want to use another smtp, change this area
+     */
     var smtpTransport = nodeMailer.createTransport({
-        service: 'Gmail',
+        service: 'naver',
         auth: {
             user: request.body.user,
             pass: request.body.pass
@@ -18,16 +20,13 @@ module.exports = (request, response) => {
         text: request.body.text
     };
 
-    var result = smtpTransport.sendMail(mailOptions, (error, response) => {
+    var result = smtpTransport.sendMail(mailOptions, (error, mailResponse) => {
         if (error) {
-            console.log('error: ', error);
+            response.status(400).send({"success": false});
             return error;
         } else {
-            console.log('success: ',response.message);
-            return response.message;
+            response.status(200).send({"success": true});
+            return mailResponse;
         }
     });
-
-    console.log('smtpTransprt: ', smtpTransport);
-    console.log('result: ', result);
 };
