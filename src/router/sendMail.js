@@ -13,20 +13,29 @@ module.exports = (request, response) => {
         }
     });
 
-    var mailOptions = {
-        from: request.body.user,
-        to: request.body.receiver,
-        subject: request.body.subject,
-        text: request.body.text
-    };
+    if (request.body.html) {
+        var mailOptions = {
+            from: request.body.user,
+            to: request.body.receiver,
+            subject: request.body.subject,
+            html: request.body.html
+        };
+    } else {
+        var mailOptions = {
+            from: request.body.user,
+            to: request.body.receiver,
+            subject: request.body.subject,
+            text: request.body.text
+        };
+    }
 
-    var result = smtpTransport.sendMail(mailOptions, (error, mailResponse) => {
+    smtpTransport.sendMail(mailOptions, (error, info) => {
         if (error) {
-            response.status(400).send({"success": false});
-            return error;
+            response.status(400).send({"success": false, "message": error});
+            return;
         } else {
-            response.status(200).send({"success": true});
-            return mailResponse;
+            response.status(200).send({"success": true, "message": info});
+            return;
         }
     });
 };

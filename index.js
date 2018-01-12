@@ -12,7 +12,7 @@ var sendMail = require('./src/router/sendMail');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.post('/send-mail', sendMail);
+app.post('/mail', sendMail);
 
 app.listen(port,() => {
     console.log(`express app listen on port ${port}`);
